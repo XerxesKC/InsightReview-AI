@@ -1,0 +1,5 @@
+ALTER TABLE `merchantpost`
+    ADD COLUMN `image_url` VARCHAR(255) DEFAULT NULL COMMENT '图片URL',
+    ADD COLUMN `video_url` VARCHAR(255) DEFAULT NULL COMMENT '视频URL',
+    ADD COLUMN `like_count` VARCHAR(255) DEFAULT '0' COMMENT '点赞数',
+    ADD COLUMN `comment_count` VARCHAR(255) DEFAULT '0' COMMENT '评论数';

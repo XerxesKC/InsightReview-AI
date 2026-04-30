@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisplusdemo.mapper.ReplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.model.domain.Reply">
+        <id column="reply_id" property="replyId" />
+        <result column="comment_id" property="commentId" />
+        <result column="user_id" property="userId" />
+        <result column="reply_to" property="replyTo" />
+        <result column="reply_content" property="replyContent" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="merchant_id" property="merchantId" />
+    </resultMap>
+
+    <select id="selectByIdAndContent" resultMap="BaseResultMap">
+        SELECT * FROM reply
+        <where>
+            <if test="replyId != null and replyId != ''">
+                AND reply_id = #{replyId}
+            </if>
+            <if test="replyContent != null and replyContent != ''">
+                AND reply_content LIKE CONCAT('%', #{replyContent}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="getReplies" resultType="com.example.mybatisplusdemo.model.domain.Reply">
+        select * from user where is_deleted = 'F'
+    </select>
+
+    <!-- 查询针对某条评论和用户的回复 -->
+    <select id="getRepliesByCommentIdAndReplyTo" resultType="com.example.mybatisplusdemo.model.domain.Reply">
+        SELECT *
+        FROM reply
+        WHERE comment_id = #{commentId}
+          AND reply_to = #{replyTo}
+          AND is_deleted = 'F'
+    </select>
+
+</mapper>

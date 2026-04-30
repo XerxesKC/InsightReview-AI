@@ -1,0 +1,2 @@
+ALTER TABLE reply
+    ADD COLUMN merchant_id VARCHAR(255) COMMENT '商家 ID';

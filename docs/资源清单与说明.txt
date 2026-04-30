@@ -1,0 +1,24 @@
+﻿智惠点评项目资源清单与说明
+
+一、源码目录
+1. RateVue
+前端 Vue 源码，包含三端页面、登录页、智能助手界面、路由、接口封装、状态管理和样式资源。
+
+2. ReviewPulse Engine
+Java Spring Boot 后端源码，包含业务接口、数据库模型、服务层、控制器和MyBatis 映射文件。
+
+3. ReviewPulse Agent
+Python 智能体服务源码，包含 FastAPI 接口、RAG 检索增强、文档处理、知识库管理、对话分析、工具调用和测试代码。
+
+二、样本数据
+sample-data/sql：包含数据库结构、典型样例 SQL，以及从开发演示环境导出的 review_pulse_full.sql。
+sample-data/agent：包含智能体意图识别样本 intent_dataset.json 和敏感词样本 sensitive_words.txt。
+
+三、部署参考文件
+deployment-files：包含演示部署脚本和配置模板。
+
+四、未包含内容
+源码包不包含以下内容：node_modules 前端依赖目录、dist 前端构建产物、target Java 编译输出目录、Python 虚拟环境、Docker 镜像、运行日志和缓存、真实 .env 密钥、公共依赖库源码、完整 BGE 模型文件。
+
+五、补充说明
+如需复现，可优先使用 sample-data/sql/review_pulse_full.sql 初始化数据库，再根据 docs/部署说明.txt 配置 Java、Node.js、Python、MySQL、Redis、BGE 模型路径和大模型 API Key。

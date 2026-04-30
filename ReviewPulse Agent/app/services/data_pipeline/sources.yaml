@@ -1,0 +1,134 @@
+# 数据源配置文件
+# 支持文件系统(PDF/DOCX/MD/TXT)和CSV/Excel文件
+
+sources:
+  # 文件系统数据源 - PDF文档
+  - name: "PDF和DOCX文件"
+    type: "filesystem"
+    enabled: true
+    description: "PDF和DOCX文档"
+    base_path: "C:/Users/12550/Desktop/homework/实习/project/小众点评/review-pulse-agent/data/uploads/merchant_1001"
+    file_patterns:
+      - "**/*.pdf"
+      - "**/*.docx"
+    recursive: true
+    encoding: "utf-8"
+    template_config:
+      enabled: true
+      template: "【文档】{file_name}：{content} 文件路径：{file_path}"
+    cleaning_steps:
+      - type: regex
+        name: "去除页码"
+        pattern: "\\[Page \\d+\\]"  # 去除页码标记
+        replace_with: ""
+        column: "content"
+
+      - type: regex
+        name: "去除多余空白"
+        pattern: "\\s+"
+        replace_with: " "
+        column: "content"
+
+      - type: drop_duplicates
+        name: "去重"
+        subset: ["content"]  # 基于内容去重
+        keep: "first"
+
+  # 文件系统数据源 - Markdown文档
+  - name: "Markdown文件"
+    type: "filesystem"
+    enabled: true
+    description: "Markdown文档"
+    base_path: "C:/Users/12550/Desktop/homework/实习/project/小众点评/review-pulse-agent/data/uploads/merchant_1001"
+    file_patterns:
+      - "**/*.md"
+      - "**/*.markdown"
+    recursive: true
+    encoding: "utf-8"
+    template_config:
+      enabled: true
+      template: "Markdown文档：《{file_name}》\n文档类型：Markdown\n内容预览：{content}"
+    cleaning_steps:
+      - type: regex
+        name: "统一标题格式"
+        pattern: "^(#{1,6})([^\\s#].*)$"
+        replace_with: "\\1 \\2"
+        column: "content"
+        flags: 8
+
+      - type: dropna
+        name: "删除空内容"
+        subset: ["content"]
+        how: "all"
+
+  # 文件系统数据源 - 文本文件
+  - name: "txt文本文件"
+    type: "filesystem"
+    enabled: true
+    description: "文本文件"
+    base_path: "C:/Users/12550/Desktop/homework/实习/project/小众点评/review-pulse-agent/data/uploads/merchant_1001"
+    file_patterns:
+      - "**/*.txt"
+    recursive: true
+    encoding: "utf-8"
+    template_config:
+      enabled: true
+      template: "文本文件：{file_name}\n文件大小：{file_size}字节\n文件内容：{content}"
+    cleaning_steps:
+      - type: regex
+        name: "去除特殊字符"
+        pattern: "[^\\u4e00-\\u9fff0-9a-zA-Z\\s，。！？、：；“”‘’（）《》——…]"
+        replace_with: ""
+        column: "content"
+
+  # CSV文件数据源示例
+  - name: "CSV文件"
+    type: "csv_excel"
+    enabled: true
+    description: "CSV文件"
+    file_path: "C:/Users/12550/Desktop/homework/实习/project/小众点评/review-pulse-agent/data/uploads/merchant_1001/川香居菜单.csv"
+    encoding: "utf-8"
+    separator: ","
+    header: 0
+    include_stats: true
+    template_config:
+      enabled: true
+      template: "【{菜品名称}】价格：{价格}元，类别：{类别}，描述：{描述}，推荐指数：{推荐指数}星，排行：{排行}。"
+    cleaning_steps:
+      - type: dropna
+        name: "删除空行"
+        subset: ["content"]
+        how: "any"
+
+      - type: fillna
+        name: "填充空值"
+        value: "未知"
+        column: "content"
+
+      - type: drop_duplicates
+        name: "去重"
+        subset: ["content"]
+        keep: "first"
+
+  # Excel文件数据源示例
+  - name: "Excel文件"
+    type: "csv_excel"
+    enabled: true
+    description: "Excel文件"
+    file_path: "C:/Users/12550/Desktop/homework/实习/project/小众点评/review-pulse-agent/data/uploads/merchant_1001/职员名单.xlsx"
+    sheet_name: 0
+    header: 0
+    include_stats: true
+    template_config:
+        enabled: true
+        template: "员工信息：{员工}，职位：{职位}，工资：{工资}元"
+    cleaning_steps:
+      - type: apply
+        name: "添加来源标签"
+        function_path: "app.services.data_pipeline.custom_cleaners.add_source_tag"
+        args: ["这是自定义标签"]
+
+      - type: drop_duplicates
+        name: "去重"
+        subset: ["content"]
+        keep: "first"

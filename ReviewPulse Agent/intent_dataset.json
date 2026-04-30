@@ -1,0 +1,114 @@
+[
+    {
+        "text": "怎么上传文档",
+        "label": "nav_doc_manage"
+    },
+    {
+        "text": "帮我添加一份新文件到知识库",
+        "label": "nav_doc_manage"
+    },
+    {
+        "text": "如何删除知识库里的内容",
+        "label": "nav_doc_manage"
+    },
+    {
+        "text": "我要上传PDF文件",
+        "label": "nav_doc_manage"
+    },
+    {
+        "text": "怎么发动态",
+        "label": "nav_dynamic_manage"
+    },
+    {
+        "text": "我要发布新内容",
+        "label": "nav_dynamic_manage"
+    },
+    {
+        "text": "在哪发店庆公告",
+        "label": "nav_dynamic_manage"
+    },
+    {
+        "text": "怎么删除发错的动态",
+        "label": "nav_dynamic_manage"
+    },
+    {
+        "text": "怎么通知顾客我的店升级了",
+        "label": "nav_dynamic_manage"
+    },
+    {
+        "text": "在哪看用户评价",
+        "label": "nav_merchant_comment"
+    },
+    {
+        "text": "顾客评论去哪看",
+        "label": "nav_merchant_comment"
+    },
+    {
+        "text": "查看用户打分",
+        "label": "nav_merchant_comment"
+    },
+    {
+        "text": "我的收藏夹在哪",
+        "label": "nav_user_collection"
+    },
+    {
+        "text": "怎么取消收藏",
+        "label": "nav_user_collection"
+    },
+    {
+        "text": "在哪看我收藏的店",
+        "label": "nav_user_collection"
+    },
+    {
+        "text": "去哪修改收藏标签",
+        "label": "nav_user_collection"
+    },
+    {
+        "text": "我发过的评价在哪看",
+        "label": "nav_user_comment"
+    },
+    {
+        "text": "怎么删除我的评价",
+        "label": "nav_user_comment"
+    },
+    {
+        "text": "我的评论审核通过了吗",
+        "label": "nav_user_comment"
+    },
+    {
+        "text": "系统怎么用",
+        "label": "system_help"
+    },
+    {
+        "text": "你能干什么",
+        "label": "system_help"
+    },
+    {
+        "text": "当前是什么版本",
+        "label": "system_version"
+    },
+    {
+        "text": "查一下更新日志",
+        "label": "system_version"
+    },
+    {
+        "text": "商家违规怎么处罚",
+        "label": "query"
+    },
+    {
+        "text": "好评返现抓到会怎样",
+        "label": "query"
+    },
+    {
+        "text": "帮我找家川菜馆",
+        "label": "query"
+    },
+    {
+        "text": "最近有没有差评",
+        "label": "query"
+    },
+    {
+        "text": "我最近收到差评了吗",
+        "label": "query"
+    }
+]

@@ -1,0 +1,114 @@
+﻿智惠点评项目部署说明
+
+一、说明
+本文件用于说明参赛源码包中各工程的部署方式。源码包主要用于评审查看和复现，不包含编译中间文件、前端构建产物、node_modules、Java target、Python 虚拟环境、真实 API Key、公共依赖库、完整模型文件和运行日志。
+
+二、项目组成
+1. RateVue
+前端 Vue 工程，包含用户端、商家端、管理员端、登录页、智能助手页面、知识库与文档管理相关页面。
+
+2. ReviewPulse Engine
+Spring Boot 业务后端，负责用户、商家、评论、收藏、动态、文件上传、数据库业务接口，以及将智能体接口代理到 Python Agent。
+
+3. ReviewPulse Agent
+Python 智能体服务，负责 RAG 检索增强问答、文档处理、知识库管理、对话日志、智能分析、工具调用、用户端和商家端智能助手能力。
+
+4. sample-data
+包含典型样本数据和数据库 SQL。其中 review_pulse_full.sql 为本地演示使用过的完整数据库 SQL 备份，可用于复现演示数据库。
+
+5. deployment-files
+包含演示部署时使用过的启动脚本和配置模板，仅作为部署参考。
+
+三、基础环境要求
+1. Java：建议 JDK 17 或与 Spring Boot 3.x 兼容的 Java 版本。
+2. Maven：建议 Maven 3.8+。
+3. Node.js：建议 Node.js 18+，用于构建前端 Vue 工程。
+4. Python：建议 Python 3.10 或 3.11。
+5. MySQL：建议 MySQL 8.x，字符集建议 utf8mb4。
+6. Redis：智能体部分功能可以选择使用 Redis 进行缓存或上下文追踪，可通过本地程序或 Docker 启动。
+7. BGE 向量模型：智能体检索增强功能需要本地 embedding 模型路径。源码包不包含完整模型文件，可自行通过互联网或终端代码下载BAAI的BGE模型，项目演示所用模型为BAAI/bge-large-zh-v1.5，链接地址为https://huggingface.co/BAAI/bge-large-zh-v1.5/tree/main。
+8. 大模型 API Key：需要配置兼容 OpenAI 格式的大模型服务 API Key。源码包不包含真实密钥，可通过阿里云百炼平台获取，链接地址为https://bailian.console.aliyun.com。
+9. E2B 沙箱：如启用大模型自动写代码并执行代码的分析能力，需要配置 E2B_API_KEY。源码包不包含真实密钥，可通过E2B官网获取，链接地址为https://e2b.dev。
+
+四、数据库初始化
+1. 创建数据库
+建议创建名为 review_pulse_demo 或 review_pulse 的数据库。
+
+示例：
+CREATE DATABASE review_pulse_demo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+2. 导入 SQL
+推荐优先导入：
+sample-data/sql/review_pulse_full.sql
+
+该文件来自开发演示环境，包含较完整的表结构和演示数据。若只需要查看结构或少量样本，也可参考 sample-data/sql 下其他 SQL 文件。
+
+3. 修改连接配置
+Spring Boot 配置文件位于：
+ReviewPulse Engine/src/main/resources/application.yml
+
+演示配置模板位于：
+deployment-files/config/engine/application-demo.yml
+
+请根据本机 MySQL 用户名、密码、端口和数据库名修改 datasource 配置。
+
+五、后端 ReviewPulse Engine 部署
+进入 ReviewPulse Engine 目录后执行：
+mvn clean package -DskipTests
+
+打包完成后，可运行 target 下生成的 Spring Boot jar。若需要单端口访问前端页面，需要先构建前端并将前端 dist 内容复制到 Spring Boot 静态资源目录；源码提交包默认不包含 dist。
+
+六、前端 RateVue 部署
+进入 RateVue 目录后执行：
+npm install
+npm run build
+
+开发调试可使用：
+npm run dev
+
+生产演示可将 dist 内容部署为静态站点，或复制到 Spring Boot 的 static 目录中由 8080 端口统一提供服务。
+
+七、智能体 ReviewPulse Agent 部署
+进入 ReviewPulse Agent 目录后执行：
+pip install -r requirements.txt
+
+复制环境变量模板：
+将 .env.example 复制为 .env，并根据本机环境填写。
+
+关键配置包括：
+API_KEY：大模型 API 密钥。
+LLM_BASE_URL：大模型服务地址。
+DATABASE_URL：Python 智能体访问 MySQL 的连接串。
+REDIS_URL：Redis 连接地址。
+CHROMA_PATH：Chroma 向量库目录。
+BGE_MODEL_PATH：BGE embedding 模型目录。
+UPLOAD_DIR：上传文件保存目录。
+LOG_DIR：日志目录。
+E2B_API_KEY：E2B 沙箱密钥，可选。
+
+启动命令：
+python main.py
+
+默认智能体服务端口为 8001。
+
+八、演示启动脚本说明
+deployment-files/scripts 中保存了演示部署使用过的 Windows bat 脚本：
+start-demo.bat：按顺序启动 Agent、Engine 和前端入口。
+start-agent.bat：启动 Python 智能体服务。
+start-engine.bat：启动 Spring Boot jar。
+start-frontend.bat：打开或提示前端访问入口。
+stop-demo.bat：停止演示相关进程。
+health-check.bat：检查 8080 和 8001 服务是否可访问。
+
+这些脚本包含开发机路径示例，提交包中仅作为部署参考。换机运行时需要按实际路径调整 Java、Python、jar、数据库、模型和 API Key 配置。
+
+九、推荐启动流程
+1. 启动 MySQL，并确认数据库已导入。
+2. 启动 Redis。
+3. 确认 BGE 模型路径存在。
+4. 填写大模型 API Key。
+5. 启动 ReviewPulse Agent。
+6. 启动 ReviewPulse Engine。
+7. 打开 http://127.0.0.1:8080。
+8. 依次展示登录页、用户端智能助手、商家端智能助手、管理员智能体业务页面、文档/知识库管理和对话日志分析。
+

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisplusdemo.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.model.domain.User">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="password" property="password" />
+        <result column="avatar" property="avatar" />
+        <result column="gender" property="gender" />
+        <result column="birthday" property="birthday" />
+        <result column="show_collection" property="showCollection" />
+        <result column="show_comment" property="showComment" />
+        <result column="user_status" property="userStatus" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_time" property="createTime" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+    <select id="selectUserPage" resultMap="BaseResultMap">
+        SELECT * FROM user
+        <where>
+            <if test="dto.userId != null and dto.userId != ''">
+                AND user_id = #{dto.userId}
+            </if>
+            <if test="dto.userName != null and dto.userName != ''">
+                AND user_name LIKE CONCAT('%', #{dto.userName}, '%')
+            </if>
+            <if test="dto.phone != null and dto.phone != ''">
+                AND phone = #{dto.phone}
+            </if>
+            <if test="dto.email != null and dto.email != ''">
+                AND email = #{dto.email}
+            </if>
+            <if test="dto.gender != null and dto.gender != ''">
+                AND gender = #{dto.gender}
+            </if>
+            <if test="dto.birthday != null">
+                AND birthday = #{dto.birthday}
+            </if>
+            <if test="dto.showCollection != null">
+                AND show_collection = #{dto.showCollection}
+            </if>
+            <if test="dto.showComment != null">
+                AND show_comment = #{dto.showComment}
+            </if>
+            <if test="dto.userStatus != null">
+                AND user_status = #{dto.userStatus}
+            </if>
+            <if test="dto.isDeleted != null">
+                AND is_deleted = #{dto.isDeleted}
+            </if>
+        </where>
+        ORDER BY user_id
+    </select>
+    <select id="getUsers" resultType="com.example.mybatisplusdemo.model.domain.User">
+        select * from user where is_deleted = 'F'
+    </select>
+
+</mapper>

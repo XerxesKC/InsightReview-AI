@@ -1,0 +1,31 @@
+- name: get_merchant_top_liked_post
+  description: 查询当前商家自己点赞数最多的动态(post)及其详细信息。
+  args_schema:
+    type: object
+    properties: {}
+    required: []
+
+- name: get_merchant_latest_comments
+  description: 查询商家最新收到的几条有效用户评论（包含具体内容、综合评分、环境、口味和服务评分）。
+  args_schema:
+    type: object
+    properties:
+      merchant_id:
+        type: string
+        description: 商家ID，如果不传则默认查询当前用户（商家）
+      limit:
+        type: integer
+        description: 查询返回的评价条数，默认为3
+    required: []
+
+- name: get_merchant_negative_comments
+  description: 获取商家最近的低分差评（例如综合评分低于3分），帮助商家发现经营问题或安抚顾客。
+  args_schema:
+    type: object
+    properties:
+      merchant_id:
+        type: string
+        description: 商家ID
+      limit:
+        type: integer
+        description: 查询返回的数量限制，默认3条

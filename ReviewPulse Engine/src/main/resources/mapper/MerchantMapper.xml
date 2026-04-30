@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisplusdemo.mapper.MerchantMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.model.domain.Merchant">
+        <id column="merchant_id" property="merchantId" />
+        <result column="merchant_name" property="merchantName" />
+        <result column="merchant_password" property="merchantPassword" />
+        <result column="description" property="description" />
+        <result column="category_id" property="categoryId" />
+        <result column="tag" property="tag" />
+        <result column="contact_phone" property="contactPhone" />
+        <result column="contact_email" property="contactEmail" />
+        <result column="address" property="address" />
+        <result column="cover_image" property="coverImage" />
+        <result column="business_license" property="businessLicense" />
+        <result column="hygienic_license" property="hygienicLicense" />
+        <result column="verification_status" property="verificationStatus" />
+        <result column="business_hours" property="businessHours" />
+        <result column="avg_rating" property="avgRating" />
+        <result column="price_level" property="priceLevel" />
+        <result column="merchant_status" property="merchantStatus" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="review" property="review" />
+    </resultMap>
+    <insert id="insertMy">
+        INSERT INTO merchant (
+            merchant_id, merchant_name, description, category_id, tag, contact_phone, contact_email, address, cover_image, business_license, hygienic_license, verification_status, business_hours, avg_rating, price_level, merchant_status, create_time, update_time, is_deleted, longitude, latitude, merchant_password, review
+        ) VALUES (
+                     #{merchant.merchantId}, #{merchant.merchantName}, #{merchant.description}, #{merchant.categoryId}, #{merchant.tag}, #{merchant.contactPhone}, #{merchant.contactEmail}, #{merchant.address}, #{merchant.coverImage}, #{merchant.businessLicense}, #{merchant.hygienicLicense}, '1', #{merchant.businessHours}, '0', #{merchant.priceLevel}, 'active', NOW(), NOW(), 'F', 100, '100', #{merchant.merchantPassword}, #{merchant.review}
+                 )
+        </insert>
+    <update id="updateMy">
+        UPDATE merchant
+        SET
+        <if test="merchant.merchantName != null and merchant.merchantName != ''">
+            merchant_name = #{merchant.merchantName},
+        </if>
+        <if test="merchant.description != null and merchant.description != ''">
+            description = #{merchant.description},
+        </if>
+        <if test="merchant.categoryId != null and merchant.categoryId != ''">
+            category_id = #{merchant.categoryId},
+        </if>
+        <if test="merchant.tag != null and merchant.tag != ''">
+            tag = #{merchant.tag},
+        </if>
+        <if test="merchant.contactPhone != null and merchant.contactPhone != ''">
+            contact_phone = #{merchant.contactPhone},
+        </if>
+        <if test="merchant.contactEmail != null and merchant.contactEmail != ''">
+            contact_email = #{merchant.contactEmail},
+        </if>
+        <if test="merchant.address != null and merchant.address != ''">
+            address = #{merchant.address},
+        </if>
+        <if test="merchant.coverImage != null and merchant.coverImage != ''">
+            cover_image = #{merchant.coverImage},
+        </if>
+        <if test="merchant.businessLicense != null and merchant.businessLicense != ''">
+            business_license = #{merchant.businessLicense},
+        </if>
+        <if test="merchant.hygienicLicense != null and merchant.hygienicLicense != ''">
+            hygienic_license = #{merchant.hygienicLicense},
+        </if>
+        <if test="merchant.verificationStatus != null">
+            verification_status = #{merchant.verificationStatus},
+        </if>
+        <if test="merchant.businessHours != null and merchant.businessHours != ''">
+            business_hours = #{merchant.businessHours},
+        </if>
+        <if test="merchant.avgRating != null and merchant.avgRating != ''">
+            avg_rating = #{merchant.avgRating},
+        </if>
+        <if test="merchant.priceLevel != null and merchant.priceLevel != ''">
+            price_level = #{merchant.priceLevel},
+        </if>
+        <if test="merchant.merchantStatus != null and merchant.merchantStatus != ''">
+            merchant_status = #{merchant.merchantStatus},
+        </if>
+        <if test="merchant.isDeleted != null and merchant.isDeleted != ''">
+            is_deleted = #{merchant.isDeleted},
+        </if>
+        <if test="merchant.longitude != null and merchant.longitude != ''">
+            longitude = #{merchant.longitude},
+        </if>
+        <if test="merchant.latitude != null and merchant.latitude != ''">
+            latitude = #{merchant.latitude},
+        </if>
+        <if test="merchant.review != null and merchant.review != ''">
+            review = #{merchant.review},
+        </if>
+            update_time = NOW()
+        WHERE merchant_id = #{merchant.merchantId};
+    </update>
+    <delete id="deleteMy">
+        UPDATE merchant SET is_deleted = "T" WHERE merchant_id = #{merchantId};
+    </delete>
+    <select id="selectBySearch" resultMap="BaseResultMap">
+        select * from merchant
+        <where>
+            is_deleted = 'F' and  concat(merchant_name, tag)  like '%${keyword}%'
+        </where>
+    </select>
+    <select id="selectByDynamicSql" resultMap="BaseResultMap">
+        select * from merchant
+        <where>
+            is_deleted = 'F'
+            <if test="merchantId != null">
+                and merchant_id = #{merchantId}
+            </if>
+            <if test="merchantName != null and merchantName != ''">
+                and merchant_name like concat('%', #{merchantName}, '%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="tag != null and tag != ''">
+                and tag like concat('%', #{tag}, '%')
+            </if>
+            <if test="avgRating != null">
+                and avg_rating >= #{avgRating}
+            </if>
+            <if test="priceLevel != null">
+                and price_level = #{priceLevel}
+            </if>
+            <if test="merchantStatus != null">
+                and merchant_status = #{merchantStatus}
+            </if>
+        </where>
+    </select>
+
+    <!-- 五星好评商户TOP20 - 返回商户信息+五星好评数量 -->
+    <select id="selectFiveStarMerchants" resultType="map">
+        SELECT
+            m.merchant_id as merchantId,
+            m.merchant_name as merchantName,
+            COUNT(c.comment_id) as five_star_count
+        FROM merchant m
+                 JOIN comment c ON m.merchant_id = c.merchant_id
+        WHERE c.rating = 5
+        GROUP BY m.merchant_id, m.merchant_name
+        ORDER BY five_star_count DESC
+        LIMIT 20
+    </select>
+
+    <!-- 评论数最多商户TOP20 - 返回商户信息+评论总数 -->
+    <select id="selectMostCommentedMerchants" resultType="map">
+        SELECT
+            m.merchant_id as merchantId,
+            m.merchant_name as merchantName,
+            COUNT(c.comment_id) as comment_count
+        FROM merchant m
+                 LEFT JOIN comment c ON m.merchant_id = c.merchant_id
+        GROUP BY m.merchant_id, m.merchant_name
+        ORDER BY comment_count DESC
+        LIMIT 20
+    </select>
+
+    <!-- 评分最高商户TOP10 - 返回精简字段 -->
+    <select id="selectHighestRatedMerchants" resultType="map">
+        SELECT
+            merchant_id as merchantId,
+            merchant_name as merchantName,
+            avg_rating as avgRating
+        FROM merchant
+        WHERE avg_rating IS NOT NULL
+        ORDER BY avg_rating DESC
+        LIMIT 10
+    </select>
+
+    <!-- 商户评分分布 -->
+    <select id="selectRatingDistribution" resultType="map">
+        SELECT
+            rating_range,
+            COUNT(*) AS count
+        FROM (
+                 SELECT
+                     CASE
+                         WHEN avg_rating >= 4.5 THEN '4.5-5'
+                         WHEN avg_rating >= 4.0 THEN '4-4.5'
+                         WHEN avg_rating >= 3.5 THEN '3.5-4'
+                         WHEN avg_rating >= 3.0 THEN '3-3.5'
+                         WHEN avg_rating >= 2.5 THEN '2.5-3'
+                         WHEN avg_rating >= 2.0 THEN '2-2.5'
+                         WHEN avg_rating >= 1.0 THEN '1-2'
+                         ELSE '0-1'
+                         END AS rating_range
+                 FROM merchant
+                 WHERE avg_rating IS NOT NULL
+             ) AS rated_merchants
+        GROUP BY rating_range
+        ORDER BY rating_range
+    </select>
+
+</mapper>

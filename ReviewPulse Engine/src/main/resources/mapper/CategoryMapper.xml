@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisplusdemo.mapper.CategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.model.domain.Category">
+        <id column="category_id" property="categoryId" />
+        <result column="category_name" property="categoryName" />
+        <result column="parent_id" property="parentId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+    <insert id="insertMy">
+        INSERT INTO category (
+            category_id, category_name, parent_id, create_time, update_time, is_deleted
+        ) VALUES (
+            #{category.categoryId}, #{category.categoryName}, #{category.parentId}, NOW(), NOW(), 'F'
+        )
+    </insert>
+    <delete id="deleteMy">
+        UPDATE category SET is_deleted = 'T' WHERE category_id = #{categoryId};
+    </delete>
+    <select id="getParentList" resultMap="BaseResultMap" >
+        SELECT category_id, category_name FROM category WHERE parent_id IS NULL AND is_deleted = 'F';
+    </select>
+    <select id="getCategoryName" resultMap="BaseResultMap">
+        select * from category where is_deleted = 'F' and category_id = #{categoryId};
+    </select>
+    <update id="updateMy">
+        UPDATE category
+        SET
+            category_name = #{category.categoryName},
+            parent_id = #{category.parentId},
+            update_time = NOW()
+        WHERE category_id = #{category.categoryId};
+    </update>
+</mapper>

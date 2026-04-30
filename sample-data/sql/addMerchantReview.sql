@@ -1,0 +1,2 @@
+ALTER TABLE merchant
+ADD COLUMN review VARCHAR(500) COMMENT '审核信息';

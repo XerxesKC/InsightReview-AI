@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisplusdemo.mapper.FavoriteMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.model.domain.Favorite">
+        <id column="favorite_id" property="favoriteId" />
+        <result column="user_id" property="userId" />
+        <result column="merchant_id" property="merchantId" />
+        <result column="tag" property="tag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 自定义分页查询，返回VO -->
+    <resultMap id="FavoriteSearchVOMap" type="com.example.mybatisplusdemo.model.vo.FavoriteSearchVO">
+        <id column="favorite_id" property="favoriteId" />
+        <result column="user_id" property="userId" />
+        <result column="merchant_id" property="merchantId" />
+        <result column="merchant_name" property="merchantName" />
+        <result column="description" property="description" />
+        <result column="address" property="address" />
+        <result column="tag" property="tag" />
+        <result column="business_hours" property="businessHours" />
+        <result column="avg_rating" property="avgRating" />
+        <result column="price_level" property="priceLevel" />
+        <result column="contact_phone" property="contactPhone" />
+    </resultMap>
+
+    <select id="searchFavoriteVO" resultMap="FavoriteSearchVOMap">
+        SELECT f.favorite_id, f.user_id, f.merchant_id, m.merchant_name, m.description, m.address, f.tag
+             , m.business_hours, m.avg_rating, m.price_level, m.contact_phone
+        FROM favorite f
+        LEFT JOIN merchant m ON f.merchant_id = m.merchant_id
+        <where>
+            f.is_deleted = 'F'
+            <if test="favoriteSearchDTO.userId != null and favoriteSearchDTO.userId != ''">
+                AND f.user_id = #{favoriteSearchDTO.userId}
+            </if>
+            <if test="favoriteSearchDTO.merchantId != null and favoriteSearchDTO.merchantId != ''">
+                AND f.merchant_id = #{favoriteSearchDTO.merchantId}
+            </if>
+            <if test="favoriteSearchDTO.merchantName != null and favoriteSearchDTO.merchantName != ''">
+                AND m.merchant_name LIKE CONCAT('%', #{favoriteSearchDTO.merchantName}, '%')
+            </if>
+            <if test="favoriteSearchDTO.tag != null and favoriteSearchDTO.tag != ''">
+                AND f.tag LIKE CONCAT('%', #{favoriteSearchDTO.tag}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

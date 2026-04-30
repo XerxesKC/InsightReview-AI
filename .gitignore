@@ -1,0 +1,36 @@
+# Exclude the original competition readme; GitHub uses README.md instead.
+/readme.txt
+
+# Frontend dependencies and build outputs
+node_modules/
+dist/
+.vite/
+
+# Java build outputs
+*/target/
+*.class
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Runtime data, logs, and local caches
+logs/
+*.log
+runtime/
+data/chroma/
+data/logs/
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Archives generated during packaging
+*.zip
+*.7z
+*.rar

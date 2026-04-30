@@ -1,0 +1,43 @@
+- name: get_user_latest_comments
+  description: 查询当前用户最新发布的几条点评记录。
+  args_schema:
+    type: object
+    properties:
+      limit:
+        type: integer
+        description: 查询返回的评价条数，默认为3
+    required: []
+
+- name: summarize_merchant_comments
+  description: 根据商家名称，查询该商家的用户评价记录，用于帮助用户总结该店铺的整体口碑。
+  args_schema:
+    type: object
+    properties:
+      merchant_name:
+        type: string
+        description: 用户想要查询和总结的商家名称，例如 "川香居"
+    required: ["merchant_name"]
+
+- name: search_merchants
+  description: 根据用户的需求（如分类、最低评分、最高价格、关键词等）在平台中搜索符合条件的优质商家。
+  args_schema:
+    type: object
+    properties:
+      keyword:
+        type: string
+        description: 搜索关键词或分类标签（如：川菜、KTV、北京烤鸭）
+      min_rating:
+        type: number
+        description: 最低综合评分要求（0.0 到 5.0 之间）
+      max_price:
+        type: number
+        description: 最高人均消费要求（元）
+
+- name: get_user_bookmarks
+  description: 查询当前用户收藏的商家列表，可用于回答用户关于"我收藏了哪些店"的问题。
+  args_schema:
+    type: object
+    properties:
+      user_id:
+        type: string
+        description: 用户ID

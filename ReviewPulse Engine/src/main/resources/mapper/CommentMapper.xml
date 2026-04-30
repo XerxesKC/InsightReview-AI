@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mybatisplusdemo.mapper.CommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.mybatisplusdemo.model.domain.Comment">
+        <id column="comment_id" property="commentId" />
+        <result column="user_id" property="userId" />
+        <result column="merchant_id" property="merchantId" />
+        <result column="comment_content" property="commentContent" />
+        <result column="is_anonymous" property="isAnonymous" />
+        <result column="rating" property="rating" />
+        <result column="env_score" property="envScore" />
+        <result column="taste_score" property="tasteScore" />
+        <result column="service_score" property="serviceScore" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="post_id" property="postId" />
+    </resultMap>
+    <update id="updateStatus">
+        UPDATE comment
+        SET status = 'T'
+        where comment_id = #{comment.commentId}
+            AND is_deleted = 'F'
+    </update>
+    <update id="deleteMy">
+        UPDATE comment
+        SET status = 'F'
+        where comment_id = #{comment.commentId}
+          AND is_deleted = 'F'
+    </update>
+
+    <select id="selectByIdAndContent" resultMap="BaseResultMap">
+        SELECT * FROM comment
+        <where>
+            <if test="commentId != null and commentId != ''">
+                AND comment_id = #{commentId}
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                AND comment_content LIKE CONCAT('%', #{commentContent}, '%')
+            </if>
+            AND is_deleted = 'F'
+            AND c.status = 'T'
+        </where>
+    </select>
+    <select id="getMerchantPostComments" resultType="com.example.mybatisplusdemo.model.domain.Comment">
+        select * from comment
+        where merchant_id = #{merchantId} and post_id is not null and status = 'T'
+    </select>
+    <select id="getMerchantComments" resultType="com.example.mybatisplusdemo.model.domain.Comment">
+        select * from comment
+        where merchant_id = #{merchantId} and post_id is null and status = 'T' and is_deleted = 'F'
+    </select>
+    <select id="getComments" resultType="com.example.mybatisplusdemo.model.domain.Comment">
+        select * from comment
+        where is_deleted = 'F' and status = 'G'
+    </select>
+
+    <select id="selectByMerchantIdWithPage" resultType="com.example.mybatisplusdemo.model.domain.Comment">
+        SELECT c.*, u.user_name
+        FROM comment c
+                 LEFT JOIN user u ON c.user_id = u.user_id
+        WHERE c.merchant_id = #{merchantId}
+          AND c.is_deleted = 'F'
+          AND c.status = 'T'
+          AND c.post_id IS NULL
+    </select>
+
+    <select id="selectByMerchantIdAndPostId" resultType="com.example.mybatisplusdemo.model.domain.Comment">
+        SELECT c.*, u.user_name
+        FROM comment c
+                 LEFT JOIN user u ON c.user_id = u.user_id
+        WHERE c.merchant_id = #{merchantId}
+          AND c.is_deleted = 'F'
+          AND c.status = 'T'
+          AND c.post_id = #{postId}
+    </select>
+<!--    <select id="getCommentsByUserId" resultMap="BaseResultMap">-->
+<!--        SELECT * FROM comment-->
+<!--        <where>-->
+<!--            user_id = #{userId}-->
+<!--            AND is_deleted = 'F'-->
+<!--        </where>-->
+<!--    </select>-->
+</mapper>
