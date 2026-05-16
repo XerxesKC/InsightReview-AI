@@ -1,119 +1,120 @@
 # InsightReview AI
 
-InsightReview AI is an AI-powered local life service review platform. It started from a lightweight review and merchant discovery system, then evolved into a three-sided intelligent platform for users, merchants, and administrators.
+InsightReview AI 是一个面向本地生活服务场景的智能点评与口碑治理平台。项目最初来自一个轻量化点评系统，随后逐步扩展为面向用户、商家和管理员三类角色的 AI 应用平台。
 
-The project combines a traditional business system with AI agent capabilities. It supports merchant search, review management, knowledge base governance, document processing, retrieval-augmented generation, conversational assistants, and natural-language data analysis.
+系统将传统业务功能与智能体能力结合起来，支持商家搜索、评价管理、知识库治理、文档处理、检索增强问答、智能助手对话以及自然语言数据分析。项目目标是把商家资料、用户评价、运营文档和对话记录转化为可检索、可问答、可分析、可审计的数据资产。
 
-## What It Does
+## 项目定位
 
-InsightReview AI is designed around three roles:
+InsightReview AI 围绕三类角色设计：
 
-- Users can search for merchants, view shop details, interact with content, save favorites, and ask the user assistant for consumption suggestions.
-- Merchants can manage shop information, publish posts, handle reviews, upload documents, and use the merchant assistant to understand feedback and operational issues.
-- Administrators can manage users and merchants, review documents, maintain knowledge bases, configure agent parameters, and analyze conversation logs.
+- 用户端：支持商家搜索、地图找店、店铺详情、收藏互动和用户智能助手，帮助用户更快获得消费建议。
+- 商家端：支持店铺资料维护、内容发布、评价管理、文档管理和商家智能助手，帮助商家理解评价反馈与经营问题。
+- 管理员端：支持用户与商家管理、文档审核、知识库治理、系统参数配置和对话日志分析，帮助管理员维护智能体质量和平台运行状态。
 
-The goal is to turn scattered business data such as merchant profiles, user reviews, operation documents, and chat records into searchable, conversational, analyzable, and auditable knowledge assets.
+项目不是单独的聊天机器人，而是一个将 AI 能力嵌入真实业务流程的完整应用系统。
 
-## Architecture
+## 系统架构
 
-The project is organized into three main applications:
+项目由三个主要工程组成：
 
 ```text
 RateVue
-  Frontend application built with Vue.
-  Provides user, merchant, and administrator interfaces.
+  Vue 前端工程，提供用户端、商家端和管理员端页面。
 
 ReviewPulse Engine
-  Java Spring Boot business backend.
-  Handles core business data, MySQL persistence, file upload, and API proxying.
+  Java Spring Boot 业务后端，负责核心业务逻辑、MySQL 数据持久化、文件上传和接口代理。
 
 ReviewPulse Agent
-  Python FastAPI AI service.
-  Provides RAG, multi-turn chat, knowledge base management, document processing,
-  OCR, Pandas analysis, and sandboxed code execution.
+  Python FastAPI 智能体服务，负责 RAG、多轮对话、知识库管理、文档处理、OCR、Pandas 分析和沙箱代码执行。
 ```
 
-## Repository Structure
+## 目录结构
 
 ```text
 .
-├─ RateVue/                 Vue frontend source code
-├─ ReviewPulse Engine/      Spring Boot backend source code
-├─ ReviewPulse Agent/       Python FastAPI AI agent source code
-├─ sample-data/             Typical sample data and SQL scripts
-└─ docs/                    Deployment notes, resource notes, and helper scripts
+├─ RateVue/                 前端 Vue 工程源码
+├─ ReviewPulse Engine/      Spring Boot 业务后端源码
+├─ ReviewPulse Agent/       Python FastAPI 智能体服务源码
+├─ sample-data/             典型样本数据和 SQL 脚本
+└─ docs/                    部署说明、资源说明和辅助脚本
 ```
 
-## Key Features
+## 核心功能
 
-- Three-sided business platform for users, merchants, and administrators.
-- Merchant search, map search, shop details, favorites, posts, reviews, and replies.
-- User-side and merchant-side AI assistants with multi-turn context support.
-- Knowledge base management with document upload, review, chunk preview, intelligent splitting, and vectorization.
-- RAG workflow with vector retrieval, sparse retrieval, reranking, query rewriting, and context trimming.
-- Multi-agent task handling for planning, routing, retrieval, analysis, tool execution, and response synthesis.
-- OCR support for extracting text from image inputs.
-- Natural-language Pandas analysis for CSV/Excel-style business data.
-- E2B sandbox execution for generated analysis code.
-- Conversation log management with hot question analysis, message trends, and retrieval success statistics.
+- 三端业务系统：用户端、商家端、管理员端完整业务流程。
+- 商家搜索与地图找店：支持分类筛选、商家详情、收藏互动等功能。
+- 评价与内容管理：支持用户评价、商家回复、商家动态和店铺资料维护。
+- 用户智能助手：围绕商家、评价、平台知识和消费建议进行多轮问答。
+- 商家智能助手：围绕经营文档、评价反馈和店铺运营问题提供辅助分析。
+- 知识库管理：支持文档上传、审核、拆分预览、智能切分、向量化和知识库维护。
+- RAG 检索增强：结合向量检索、稀疏检索、重排、查询改写和上下文裁剪，提高回答可靠性。
+- 多智能体协同：支持任务规划、意图路由、知识检索、数据分析、工具调用和回复合成。
+- OCR 文本识别：支持从图片输入中提取文本并参与智能体处理。
+- Pandas 自然语言数据分析：支持对 CSV、Excel 等数据文件进行自然语言分析。
+- E2B 沙箱执行：对动态生成的分析代码进行隔离执行，提高安全性和可控性。
+- 对话日志分析：支持热门问题、消息趋势、检索成功率等运行质量指标查看。
 
-## Tech Stack
+## 技术栈
 
-Frontend:
+前端：
 
 - Vue
 - Vite
 - Element Plus
 - Axios
 
-Business Backend:
+业务后端：
 
 - Java
 - Spring Boot
 - MyBatis Plus
 - MySQL
 
-AI Agent Service:
+智能体服务：
 
 - Python
 - FastAPI
 - LangGraph
 - Chroma
 - Redis
-- BGE embedding model
-- Large language model API
+- BGE Embedding Model
+- Large Language Model API
 - E2B Code Interpreter
 - Pandas
 
-## Local Development Notes
+## 本地运行说明
 
-This repository contains source code and typical sample data. It does not include heavy dependencies, build outputs, local virtual environments, runtime logs, complete model files, or private API keys.
+本仓库包含项目源码、典型样本数据和部署说明，不包含大型依赖、构建产物、本地虚拟环境、运行日志、完整模型文件和私有密钥。
 
-A complete local demo usually requires:
+完整本地运行通常需要准备：
 
-- Java 21 or a compatible JDK
+- Java 21 或兼容 JDK
 - Maven
-- Node.js and npm
-- Python or Conda environment
+- Node.js 与 npm
+- Python 或 Conda 环境
 - MySQL
 - Redis
-- Local Chroma storage directory
-- Local BGE embedding model path
-- LLM API key
-- E2B API key
+- Chroma 本地存储目录
+- BGE 中文嵌入模型本地路径
+- 大模型 API Key
+- E2B API Key
 
-See the documentation under `docs/` for more detailed deployment notes and resource descriptions.
+更详细的部署步骤请查看：
 
-## Data And Models
+- `docs/部署说明.txt`
+- `docs/资源清单与说明.txt`
 
-The `sample-data/` directory contains typical SQL scripts and small sample files for development and demonstration. Full datasets, runtime vector databases, dependency libraries, and model weights are intentionally excluded from the repository.
+## 数据与模型说明
 
-You should configure local paths and credentials according to your own environment before running the full system.
+`sample-data/` 目录中保留了用于开发和演示的典型 SQL 脚本与样本文件。完整数据集、运行时向量库、依赖库和模型权重文件未包含在仓库中。
 
-## Security Notes
+运行项目前，需要根据本地环境配置数据库地址、Redis 地址、模型路径、API Key 和 E2B Key 等参数。
 
-Do not commit real `.env` files, API keys, database passwords, model credentials, or private runtime data. Use example configuration files and local environment variables for sensitive settings.
+## 安全说明
 
-## Project Status
+请勿提交真实 `.env` 文件、API Key、数据库密码、模型访问凭据或私有运行数据。建议使用示例配置文件和本地环境变量管理敏感信息。
 
-InsightReview AI is a personal full-stack AI application project focused on combining practical business workflows with agent-based AI capabilities. The current version supports local demonstration and further extension.
+## 项目状态
+
+InsightReview AI 是一个个人全栈 AI 应用项目，重点探索业务系统与智能体能力的结合。目前项目支持本地演示，并可继续扩展为更完整的智能口碑分析与经营决策平台。
